@@ -50,18 +50,27 @@ function create_directories() {
         else
             echo $RED "$DIR2 is not empty! $RESET"
         fi
-        if [[ -s $FILE3 ]]; then
-            echo $RED "style.css is present and not empty! $RESET"
+
+        # scss
+        if [[ -s $FILE2 ]]; then
+            echo $RED "$FILE2 is present and not empty! $RESET"
         else
-            echo $YELLOW "sytyle.css is present and is empty! $RESET"
+            echo $YELLOW "$FILE2 is present and is empty! $RESET"
+        fi
+
+        # css
+        if [[ -s $FILE3 ]]; then
+            echo $RED "$FILE3 is present and not empty! $RESET"
+        else
+            echo $YELLOW "$FILE3 is present and is empty! $RESET"
         fi
     fi
-
+    # index present? Empty?
     if [[ -f $FILE1 ]]; then
         if [[ -s $FILE1 ]]; then
-            echo $RED "index.html is present and not empty! $RESET"
+            echo $RED "$FILE1 is present and not empty! $RESET"
         else
-            echo $YELLOW "index.html is present and is empty! $RESET"
+            echo $YELLOW "$FILE1 is present and is empty! $RESET"
         fi
     else
 
@@ -77,7 +86,7 @@ function create_directories() {
 
 # Sass Activate
 function sass() {
-    read "input?Do you want to activate sass in the background [Y/n] "
+    read -k "input?Do you want to activate sass in the background [Y/n] "
     if [[ "$input" =~ ^[Yy]$ ]]; then
         nohup sass --watch scss:css &
         echo $YELLOW
@@ -86,6 +95,7 @@ function sass() {
     elif [[  "$input" =~ [Nn]$ ]]; then
         banner
     else
+        echo
         sass
     fi
 }
