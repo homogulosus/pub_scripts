@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 
 ############################################
 # Scrip to build up folders and some files #
@@ -18,10 +18,15 @@ RESET="\e[97m"
 YELLOW="\e[33m"
 RED="\e[31m"
 
-# Start with a clean screen
-clear
+main() {
+    # Start with a clean screen rest is self explanatory
+    clear
+    create_directories
+    sass
+}
 
-# Functions
+# Functions #
+
 function build_directories() {
     touch index.html
     mkdir scss css
@@ -32,51 +37,61 @@ function build_directories() {
     echo
 }
 
-# Logic
-if [[ -d $DIR1 || -d $DIR2 ]]; then
-    echo "css or scss directory already present!\n"
-    if [[ -z $(ls -A $DIR1) ]]; then
-        echo $YELLOW "$DIR1 is empty! $RESET"
-    else
-        echo $RED "$DIR1 is not empty! $RESET"
+function create_directories() {
+    if [[ -d $DIR1 || -d $DIR2 ]]; then
+        echo "css or scss directory already present!\n"
+        if [[ -z $(ls -A $DIR1) ]]; then
+            echo $YELLOW "$DIR1 is empty! $RESET"
+        else
+            echo $RED "$DIR1 is not empty! $RESET"
+        fi
+        if [[ -z $(ls -A $DIR2) ]]; then
+            echo $YELLOW "$DIR2 is empty! $RESET"
+        else
+            echo $RED "$DIR2 is not empty! $RESET"
+        fi
+        if [[ -s $FILE3 ]]; then
+            echo $RED "style.css is present and not empty! $RESET"
+        else
+            echo $YELLOW "sytyle.css is present and is empty! $RESET"
+        fi
     fi
-    if [[ -z $(ls -A $DIR2) ]]; then
-        echo $YELLOW "$DIR2 is empty! $RESET"
-    else
-        echo $RED "$DIR2 is not empty! $RESET"
-    fi
-    if [[ -s $FILE3 ]]; then
-        echo $RED "style.css is present and not empty! $RESET"
-    else
-        echo $YELLOW "sytyle.css is present and is empty! $RESET"
-    fi
-fi
 
-if [[ -f $FILE1 ]]; then
-    if [[ -s $FILE1 ]]; then
-        echo $RED "index.html is present and not empty! $RESET"
+    if [[ -f $FILE1 ]]; then
+        if [[ -s $FILE1 ]]; then
+            echo $RED "index.html is present and not empty! $RESET"
+        else
+            echo $YELLOW "index.html is present and is empty! $RESET"
+        fi
     else
-        echo $YELLOW "index.html is present and is empty! $RESET"
+
+        # Get things done
+        build_directories
+        git init
+        git add .
+
+        echo "Directories initialized in `pwd` :-) "
+        tree -aC -I '.git' --dirsfirst "$@" | less -FRNX
     fi
-else
-
-    # Executions
-    build_directories
-    git init
-    git add .
-
-    echo "Directories initialized in `pwd` :-) "
-    tree -aC -I '.git' --dirsfirst "$@" | less -FRNX
-   fi
+}
 
 # Sass Activate
-echo $YELLOW
-echo "SASS Adtivated with nohup, remember to run sassout when you are done."
-nohup sass --watch scss:css &
+function sass() {
+    read "input?Do you want to activate sass in the background [Y/n] "
+    if [[ "$input" =~ ^[Yy]$ ]]; then
+        nohup sass --watch scss:css &
+        echo $YELLOW
+        echo "Sass compiler adtivated with nohup, remember to run sassout when you are done."
+        banner
+    elif [[  "$input" =~ [Nn]$ ]]; then
+        banner
+    else
+        sass
+    fi
+}
 
-# Implement some user interaction. Ask if user wants sassyness
-#  Ask user if a http server would be nice.
-#  which one? Options: PHP, python, node.
+# BANNER
+function banner() {
 echo $LIGHT_GREEN
 cat << "EOF"
 
@@ -96,3 +111,6 @@ cat << "EOF"
 
 EOF
 echo $RESET
+}
+
+main "$@"
