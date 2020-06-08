@@ -6,11 +6,11 @@
 ############################################
 
 # Variables
-FILE1=index.html
-FILE2=scss/style.scss
-FILE3=css/style.css
-DIR1=scss
-DIR2=css
+INDEX=index.html
+SCSS=scss/style.scss
+CSS=css/style.css
+DIR_SCSS=scss
+DIR_CSS=css
 
 # Colors
 LIGHT_GREEN="\e[92m"
@@ -38,39 +38,39 @@ function build_directories() {
 }
 
 function create_directories() {
-    if [[ -d $DIR1 || -d $DIR2 ]]; then
+    if [[ -d $DIR_SCSS || -d $DIR_CSS ]]; then
         echo "css or scss directory already present!\n"
-        if [[ -z $(ls -A $DIR1) ]]; then
-            echo $YELLOW "$DIR1 is empty! $RESET"
+        if [[ -z $(ls -A $DIR_SCSS) ]]; then
+            echo $YELLOW "$DIR_SCSS is empty! $RESET"
         else
-            echo $RED "$DIR1 is not empty! $RESET"
+            echo $RED "$DIR_SCSS is not empty! $RESET"
         fi
-        if [[ -z $(ls -A $DIR2) ]]; then
-            echo $YELLOW "$DIR2 is empty! $RESET"
+        if [[ -z $(ls -A $DIR_CSS) ]]; then
+            echo $YELLOW "$DIR_CSS is empty! $RESET"
         else
-            echo $RED "$DIR2 is not empty! $RESET"
+            echo $RED "$DIR_CSS is not empty! $RESET"
         fi
 
         # scss
-        if [[ -s $FILE2 ]]; then
-            echo $RED "$FILE2 is present and not empty! $RESET"
+        if [[ -s $SCSS ]]; then
+            echo $RED "$SCSS is present and not empty! $RESET"
         else
-            echo $YELLOW "$FILE2 is present and is empty! $RESET"
+            echo $YELLOW "$SCSS is present and is empty! $RESET"
         fi
 
         # css
-        if [[ -s $FILE3 ]]; then
-            echo $RED "$FILE3 is present and not empty! $RESET"
+        if [[ -s $CSS ]]; then
+            echo $RED "$CSS is present and not empty! $RESET"
         else
-            echo $YELLOW "$FILE3 is present and is empty! $RESET"
+            echo $YELLOW "$CSS is present and is empty! $RESET"
         fi
     fi
     # index present? Empty?
-    if [[ -f $FILE1 ]]; then
-        if [[ -s $FILE1 ]]; then
-            echo $RED "$FILE1 is present and not empty! $RESET"
+    if [[ -f $INDEX ]]; then
+        if [[ -s $INDEX ]]; then
+            echo $RED "$INDEX is present and not empty! $RESET"
         else
-            echo $YELLOW "$FILE1 is present and is empty! $RESET"
+            echo $YELLOW "$INDEX is present and is empty! $RESET"
         fi
     else
 
