@@ -21,7 +21,7 @@ RED="\e[31m"
 main() {
     # Start with a clean screen rest is self explanatory
     clear
-    create_directories
+    verify_directories
     sass
 }
 
@@ -37,7 +37,7 @@ function build_directories() {
     echo
 }
 
-function create_directories() {
+function verify_directories() {
     if [[ -d $DIR_SCSS || -d $DIR_CSS ]]; then
         echo "css or scss directory already present!\n"
         if [[ -z $(ls -A $DIR_SCSS) ]]; then
