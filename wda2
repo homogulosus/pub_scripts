@@ -1,0 +1,157 @@
+#!/usr/bin/env zsh
+
+############################################
+# Scrip to build up folders and some files #
+# Aim at Simple Web Development            #
+# Author: homogulosus                      #
+############################################
+
+# color palete
+LIGHT_GREEN="\e[92m"
+RESET="\e[97m"
+YELLOW="\e[33m"
+RED="\e[31m"
+
+# Vars
+INDEX="index.html"
+DIR_SCSS="scss"
+DIR_CSS="css"
+SCSS="style.scss"
+CSS="style.css"
+BOILER_PLATE="sass-boilerplate"
+
+main() {
+    clear
+    # TODO Welcome screen
+    git_check
+    dir_check
+    sass_check
+    banner
+}
+
+function dir_check() {
+    if [[ -d $DIR_SCSS || -d $DIR_CSS ]]; then
+        echo $RED "$DIR_SCSS and/or $DIR_CSS directories already present!" $RESET
+    elif [[ -f $INDEX ]]; then
+        echo $YELLOW "$INDEX exist in this folder!" $RESET
+    elif [[ -d $BOILER_PLATE ]]; then
+        echo $YELLOW "boilerplate exist!"
+    else
+        build_directories
+    fi
+}
+
+function build_directories() {
+    print $LIGHT_GREEN"Press 1 for Simple Structure"
+    print "Press 2 for Scss 7-1 boilerplate"
+    read -k "input?" $RESET
+    if [[ "$input" =~ ^[1]$ ]]; then
+        simple_build
+    elif [[ "$input" =~ ^[2]$ ]]; then
+        boilerplate_build
+    else
+        build_directories
+    fi
+}
+
+function simple_build() {
+    touch $INDEX
+    mkdir $DIR_SCSS $DIR_CSS
+    touch $DIR_SCSS/$SCSS $DIR_CSS/$CSS README.md
+    echo ".gitignore\nnohup.out" > .gitignore
+    echo
+}
+
+# This is redundant but I'll leave it commented
+# function boilerplate_check() {
+#     if [[ -d $BOILER_PLATE ]]; then
+#         echo $YELLOW "$BOILER_PLATE Already exist!" $RESET
+#     else
+#         boilerplate_build
+#     fi
+# }
+
+function boilerplate_build() {
+    # TODO for now fetch it from github.
+    # make my own boilerplate and clone that one localy
+    # TODO!! Check if boilerplate exist!
+    # hint: Clones of the outer repository will not contain the contents of
+    # hint: the embedded repository and will not know how to obtain it.
+    # hint: If you meant to add a submodule, use:
+    # hint:
+    # hint: 	git submodule add <url> sass-boilerplate
+    # hint:
+    # hint: If you added this path by mistake, you can remove it from the
+    # hint: index with:
+    # hint:
+    # hint: 	git rm --cached sass-boilerplate
+    # hint:
+    # hint: See "git help submodule" for more information.
+    # TODO :Man gitsubmodules(7)
+    print "\nDowloading boilerplate from github using ssh"
+    # git rm --cached $BOILER_PLATE
+    git submodule add git@github.com:HugoGiraudel/sass-boilerplate.git $BOILER_PLATE
+    # git clone git@github.com:HugoGiraudel/sass-boilerplate.git
+}
+
+function git_check() {
+    if [[ -d .git ]]; then
+        echo $YELLOW "Already under surveillance"
+    else
+        git_init
+    fi
+}
+
+function git_init() {
+    git init
+    git add .
+    git commit -m "initial commit"
+}
+
+function sass_check() {
+    SERVICE='sass'
+
+    if pgrep -xq -- "${SERVICE}"; then
+        echo $RED "sass service is already running"
+    else
+        nohup sass --watch scss:css &
+        echo $LIGHT_GREEN "Sass compiler active with nohup"
+        echo "Remember to sassout when you are done!" $RESET
+    fi
+}
+
+function sass() {
+    read -k "input?Do you want to activate sass in the background [Y/n] "
+    if [[ "$input" =~ ^[Yy]$ ]]; then
+        sass_check
+    elif [[ "$input" =~ ^[Nn]$ ]]; then
+        # TODO
+    else
+        echo
+        sass
+    fi
+}
+
+function banner() {
+echo $LIGHT_GREEN
+cat << "EOF"
+
+        █╗░░░░░░░██╗███████╗██████╗░  ██████╗░███████╗██╗░░░██╗
+      ░██║░░██╗░░██║██╔════╝██╔══██╗  ██╔══██╗██╔════╝██║░░░██║
+      ░╚██╗████╗██╔╝█████╗░░██████╦╝  ██║░░██║█████╗░░╚██╗░██╔╝
+      ░░████╔═████║░██╔══╝░░██╔══██╗  ██║░░██║██╔══╝░░░╚████╔╝░
+      ░░╚██╔╝░╚██╔╝░███████╗██████╦╝  ██████╔╝███████╗░░╚██╔╝░░
+      ░░░╚═╝░░░╚═╝░░╚══════╝╚═════╝░  ╚═════╝░╚══════╝░░░╚═╝░░░
+
+      ░█████╗░░█████╗░████████╗██╗██╗░░░██╗░█████╗░████████╗███████╗██████╗░
+      ██╔══██╗██╔══██╗╚══██╔══╝██║██║░░░██║██╔══██╗╚══██╔══╝██╔════╝██╔══██╗
+      ███████║██║░░╚═╝░░░██║░░░██║╚██╗░██╔╝███████║░░░██║░░░█████╗░░██║░░██║
+      ██╔══██║██║░░██╗░░░██║░░░██║░╚████╔╝░██╔══██║░░░██║░░░██╔══╝░░██║░░██║
+      ██║░░██║╚█████╔╝░░░██║░░░██║░░╚██╔╝░░██║░░██║░░░██║░░░███████╗██████╔╝
+      ╚═╝░░╚═╝░╚════╝░░░░╚═╝░░░╚═╝░░░╚═╝░░░╚═╝░░╚═╝░░░╚═╝░░░╚══════╝╚═════╝░
+
+EOF
+echo $RESET
+}
+
+main "$@"
