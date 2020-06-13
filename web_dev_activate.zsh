@@ -5,6 +5,12 @@
 # Aim at Simple Web Development            #
 ############################################
 
+# TODO: Ask if 7.1 structure is wanted. If wanted pull it from
+# GitHub: git@github.com:HugoGiraudel/sass-boilerplate.git
+# Sass conversion
+# Clone it, head into the project and then run:
+# sass-convert -F scss -T sass -i -R ./  && find . -iname “*.scss” -exec bash -c 'mv "$0" “${0%\.scss}.sass"' {} \;
+
 # Variables
 INDEX=index.html
 SCSS=scss/style.scss
@@ -19,21 +25,39 @@ YELLOW="\e[33m"
 RED="\e[31m"
 
 main() {
-    # Start with a clean screen rest is self explanatory
     clear
-    verify_directories
+    # verify_directories
+    git_check
     sass
 }
 
-# Functions #
+function boilerplate() {
+    read -k $LIGHT_GREEN "Press 1 for Simple folder structure\nPress 2 for 7-1 boilerplate" $RESET
+    if [[ "$input" =~ ^[1]$ ]]; then
+        verify_directories
+    elif [[  "$input" =~ [2]$ ]]; then
+        seven_one_boilerplate
+    else
+        echo
+        boilerplate
+    fi
+}
+
+function check_for_boilerplate() {
+    # TODO check existance of boilerplate
+
+
+function seven_one_boilerplate() {
+    # TODO build seven one boilerplate
+}
 
 function build_directories() {
     touch index.html
     mkdir scss css
-    echo ".gitignore\nnohup.out" > .gitignore
     touch scss/style.scss
     touch css/style.css
     touch README.md
+    echo ".gitignore\nnohup.out" > .gitignore
     echo
 }
 
@@ -76,13 +100,22 @@ function verify_directories() {
 
         # Get things done
         build_directories
-        git init
-        git add .
 
         echo "Directories initialized in `pwd` :-) "
         tree -aC -I '.git' --dirsfirst "$@" | less -FRNX
     fi
 }
+
+function git_check() [
+    # TODO check if .git already exist
+    if [[ -d .git ]]; then
+        echo $YELLOW "This folder is already under version surveillance!"
+    else
+        git init
+        git add .
+        git commit -m "initial commit"
+    fi
+]
 
 # Sass Activate
 function sass() {
