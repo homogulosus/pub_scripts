@@ -156,4 +156,8 @@ EOF
 echo $RESET
 }
 
+function nanda() {
+    echo "this funct does nothoongh"
+}
+
 main "$@"

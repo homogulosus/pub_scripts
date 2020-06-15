@@ -19,13 +19,13 @@ DIR_CSS="css"
 SCSS="style.scss"
 CSS="style.css"
 BOILER_PLATE="sass-boilerplate"
+STYLE="stylesheets"
 
 main() {
     clear
-    # TODO Welcome screen
-    git_check
     dir_check
-    sass_check
+    git_check
+    sass
     banner
 }
 
@@ -34,17 +34,18 @@ function dir_check() {
         echo $RED "$DIR_SCSS and/or $DIR_CSS directories already present!" $RESET
     elif [[ -f $INDEX ]]; then
         echo $YELLOW "$INDEX exist in this folder!" $RESET
-    elif [[ -d $BOILER_PLATE ]]; then
-        echo $YELLOW "boilerplate exist!"
+    elif [[ -d $STYLE ]]; then
+        echo $YELLOW"$STYLE already exist!" $RESET
     else
+        welcome_banner
         build_directories
     fi
 }
 
 function build_directories() {
     print $LIGHT_GREEN"Press 1 for Simple Structure"
-    print "Press 2 for Scss 7-1 boilerplate"
-    read -k "input?" $RESET
+    print "Press 2 for Scss 7-1 boilerplate" $RESET
+    read -k "input?"
     if [[ "$input" =~ ^[1]$ ]]; then
         simple_build
     elif [[ "$input" =~ ^[2]$ ]]; then
@@ -52,6 +53,9 @@ function build_directories() {
     else
         build_directories
     fi
+
+    echo "Directories initialized in `pwd` 🗂"
+    tree -aC -I '.git' --dirsfirst "$@" | less -FRNX
 }
 
 function simple_build() {
@@ -71,32 +75,33 @@ function simple_build() {
 #     fi
 # }
 
+function move_boilerplate() {
+    cd $BOILER_PLATE
+    mv * ../
+    cd ..
+    rm -rf $BOILER_PLATE
+}
+
 function boilerplate_build() {
     # TODO for now fetch it from github.
     # make my own boilerplate and clone that one localy
     # TODO!! Check if boilerplate exist!
-    # hint: Clones of the outer repository will not contain the contents of
-    # hint: the embedded repository and will not know how to obtain it.
-    # hint: If you meant to add a submodule, use:
-    # hint:
     # hint: 	git submodule add <url> sass-boilerplate
-    # hint:
     # hint: If you added this path by mistake, you can remove it from the
     # hint: index with:
-    # hint:
     # hint: 	git rm --cached sass-boilerplate
-    # hint:
-    # hint: See "git help submodule" for more information.
     # TODO :Man gitsubmodules(7)
     print "\nDowloading boilerplate from github using ssh"
     # git rm --cached $BOILER_PLATE
-    git submodule add git@github.com:HugoGiraudel/sass-boilerplate.git $BOILER_PLATE
+    # TODO move everything one folder up
+    git clone git@github.com:HugoGiraudel/sass-boilerplate.git $BOILER_PLATE
+    move_boilerplate
     # git clone git@github.com:HugoGiraudel/sass-boilerplate.git
 }
 
 function git_check() {
     if [[ -d .git ]]; then
-        echo $YELLOW "Already under surveillance"
+        echo $YELLOW"Already under surveillance" $RESET
     else
         git_init
     fi
@@ -104,32 +109,43 @@ function git_check() {
 
 function git_init() {
     git init
+    echo ".gitignore\nnohup.out" > .gitignore
     git add .
-    git commit -m "initial commit"
+    git commit -q -m "initial commit"
 }
 
 function sass_check() {
     SERVICE='sass'
 
     if pgrep -xq -- "${SERVICE}"; then
-        echo $RED "sass service is already running"
+        echo $RED"sass service is already running" $RESET
     else
         nohup sass --watch scss:css &
-        echo $LIGHT_GREEN "Sass compiler active with nohup"
+        echo $LIGHT_GREEN"Sass compiler active with nohup"
         echo "Remember to sassout when you are done!" $RESET
     fi
 }
 
 function sass() {
-    read -k "input?Do you want to activate sass in the background [Y/n] "
-    if [[ "$input" =~ ^[Yy]$ ]]; then
+    read -k "INPUT?Do you want to activate sass in the background [Y/n] "; echo
+    if [[ "$INPUT" =~ ^[Yy]$ ]]; then
         sass_check
-    elif [[ "$input" =~ ^[Nn]$ ]]; then
-        # TODO
+    elif [[ "$INPUT" =~ ^[Nn]$ ]]; then
+        # TODO Banner and quit?
     else
         echo
         sass
     fi
+}
+
+function welcome_banner() {
+echo $LIGHT_GREEN
+cat << "EOF"
+
+    █░█░█ █▀▀ █░░ █▀▀ █▀█ █▀▄▀█ █▀▀
+    ▀▄▀▄▀ ██▄ █▄▄ █▄▄ █▄█ █░▀░█ ██▄
+EOF
+echo $RESET
 }
 
 function banner() {
