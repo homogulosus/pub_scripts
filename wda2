@@ -132,6 +132,7 @@ function sass() {
         sass_check
     elif [[ "$INPUT" =~ ^[Nn]$ ]]; then
         # TODO Banner and quit?
+        return
     else
         echo
         sass
