@@ -28,6 +28,8 @@ main() {
     git_check
     sass
     banner
+
+    return 0
 }
 
 function dir_check() {
