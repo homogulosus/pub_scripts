@@ -19,8 +19,11 @@ mv $NANO_SHORT .nano && cd .nano/
 git clone --depth=1 $NANO_EXTRA syntax_improved
 cd ~/ && touch .nanorc
 
-echo "# Enable syntax highlighting in Nano\ninclude ~/.nano/syntax/*.nanorc\ninclude ~/.nano/syntax_improved/*.nanorc" >> ~/.nanorc
+echo "# Enable syntax highlighting in Nano" >> $HOME/.nanorc
+echo "include ~/.nano/syntax/*.nanorc" >> $HOME/.nanorc
+echo "include ~/.nano/syntax_improved/*.nanorc" >> $HOME/.nanorc
 
 rm -vf $NANO_SRC
-print "\nEXit terminal and reopen using $NANO_SHORT\nTo unistall it and revert to old:\ncd ~/.nano && sudo make"
+printf "\nExit terminal and reopen using $NANO_SHORT\nTo uninstall it and revert
+to old:\ncd ~/.nano && sudo make\n"
 exit
