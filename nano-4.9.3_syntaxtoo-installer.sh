@@ -24,6 +24,6 @@ echo "include ~/.nano/syntax/*.nanorc" >> $HOME/.nanorc
 echo "include ~/.nano/syntax_improved/*.nanorc" >> $HOME/.nanorc
 
 rm -vf $NANO_SRC
-printf "\nExit terminal and reopen using $NANO_SHORT\nTo unistall it and revert
+printf "\nExit terminal and reopen using $NANO_SHORT\nTo uninstall it and revert
 to old:\ncd ~/.nano && sudo make\n"
 exit
