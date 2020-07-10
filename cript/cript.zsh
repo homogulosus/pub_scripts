@@ -1,7 +1,6 @@
 #!/usr/bin/env zsh
 
-# TODO, make it a script. Flags -E to encrypt -D to decrypt.
-# Usage: $2 = input $3 = output
+# Idea taken from: github.com/tylerneylon/dotfiles/blob/master/.bash_profile
 function encrypt() {
   if [[ -z "$1" ]]; then
     echo Usage: encrypt '<infile>' '[outfile]'
@@ -20,7 +19,6 @@ function encrypt() {
   openssl des3 -salt -in "$1" -out "$out"
 }
 
-# Usage: $1 = input $2 = output
 function decrypt() {
   if [[ -z "$1" ]]; then
     echo Usage: decrypt '<infile>' '[outfile]'
