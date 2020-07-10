@@ -21,6 +21,8 @@ SCSS="style.scss"
 CSS="style.css"
 BOILER_PLATE="sass-boilerplate"
 STYLE="stylesheets"
+SCRIPTS="scripts"
+JS="index.js"
 
 function main() {
     clear
@@ -57,26 +59,20 @@ function build_directories() {
         build_directories
     fi
 
+    # History: deleted N flag, I don't really like the numbers displayed.
     echo "Directories initialized in `pwd` 🗂"
-    tree -aC -I '.git' --dirsfirst "$@" | less -FRNX
+    tree -aC -I '.git' --dirsfirst "$@" | less -FRX
 }
 
+# TODO Build template. TEST!!!
 function simple_build() {
-    touch $INDEX
-    mkdir $DIR_SCSS $DIR_CSS
-    touch $DIR_SCSS/$SCSS $DIR_CSS/$CSS README.md
+    mkdir $DIR_SCSS $DIR_CSS $SCRIPTS
+    touch $DIR_SCSS/$SCSS $DIR_CSS/$CSS $INDEX $JS README.md
     echo ".gitignore\nnohup.out" > .gitignore
     echo
 }
 
-
-function move_boilerplate() {
-    cd $BOILER_PLATE
-    mv * ../
-    cd ..
-    rm -rf $BOILER_PLATE
-}
-
+# TODO
 function boilerplate_build() {
     # TODO for now fetch it from github.
     # make my own boilerplate and clone that one localy
@@ -86,6 +82,13 @@ function boilerplate_build() {
     print "\nDowloading boilerplate from github using ssh"
     git clone git@github.com:HugoGiraudel/sass-boilerplate.git $BOILER_PLATE
     move_boilerplate
+}
+
+function move_boilerplate() {
+    cd $BOILER_PLATE
+    mv * ../
+    cd ..
+    rm -rf $BOILER_PLATE
 }
 
 function git_check() {
