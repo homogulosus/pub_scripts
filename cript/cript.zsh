@@ -9,7 +9,7 @@ function encrypt() {
   if [[ -z "$2" ]]; then
     out="$1".des3
   else
-    out="$2"
+    out="$2".des3
   fi
   if [[ "$1" == "$out" ]]; then
     echo Filenames must be different.
@@ -44,7 +44,11 @@ function decrypt() {
 function help() {
   # Print help
 cat << "Help"
-  This is Help
+  -E encrypt
+  -D decrypt
+  anything else returns this help
+
+  cript -[ED] <file_to_encript/decript> [output_file]
 Help
 }
 
